@@ -57,8 +57,8 @@ HList *HListNew(void *dataInitial)
     pNewList->nodes = 1;
     pNewList->head->previous = pNewList->head;
     pNewList->head->next = NULL;
-    pNewList->head->data = data;
-    __errcode = LIST_SUCCESS;
+    pNewList->head->data = dataInitial;
+    _inListErrno = HEXCELL_LIST_SUCCESS;
 
     return pNewList;
 }
@@ -104,11 +104,11 @@ HList *HListNodeAdd(HList *pList, void *pData)
 
     /* This shouldn't happened...generally */
     if(!pList->head) {
-        if(!(pList->head = malloc(sizeof(HListNode))) {
+        if(!(pList->head = malloc(sizeof(HListNode)))) {
             _inListErrno = HEXCELL_LIST_ALLOCATION_FAILURE;
             return NULL;
         }
-        pList->head->next = NULL:
+        pList->head->next = NULL;
         pList->head->previous = NULL;
         pList->head->data = pData;
         pList->nodes = 1;
@@ -181,11 +181,11 @@ HList *HListNodeInsertByIndex(HList *pList, void *pData, unsigned int inIndex)
     } else if(inIndex >= count) {
         /* Case 2: Index larger than max node count,
            Append to last by default */
-        return HListNodeAdd(pList, pNode);
+        return HListNodeAdd(pList, pData);
 
     } else {
         /* General case */
-        return HListNodeInsert(pList, pData, HListNodeByIndex(pList));
+        return HListNodeInsert(pList, pData, HListNodeByIndex(pList, inIndex));
     }
 
     _inListErrno = HEXCELL_LIST_SUCCESS;
@@ -251,17 +251,17 @@ HList *HListNodeRemoveByDataAdvanced(HList *pList, void *pData, HListCompareHelp
 HListNode *HListNodeLast(HList *pList)
 {
     if(pList) {
-        if(!pList->head->prev)
+        if(!pList->head->previous)
             return pList->head; // Only head node
         else
-            return pList->head->prev;
+            return pList->head->previous;
     }
     return NULL;
 }
 
 HListNode *HListNodeByIndex(HList *pList, unsigned int inIndex)
 {
-    const HListNode *tNode = pList->head;
+    HListNode *tNode = pList->head;
 
     if(inIndex >= HListNodeCount(pList))
         return HListNodeLast(pList);
