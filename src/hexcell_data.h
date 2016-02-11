@@ -63,7 +63,7 @@ const short BID_PROP_UID              =   0x1D41
 const short BID_PROP_GID              =   0x1D52
 const short BID_PROP_DEV1             =   0x1D6A
 const short BID_PROP_DEV2             =   0x1D6B
-const short BID_PROP_DATA_NULL        =   0x30FF
+//const short BID_PROP_DATA_NULL        =   0x30FF
 
 /* Block types */
 //enum { BLK_REG, BLK_HARDLINK, BLK_SYMLINK, BLK_CHARDEV, BLK_BLOCKDEV, BLK_DIR, BLK_FIFO };
@@ -88,6 +88,12 @@ typedef struct _HCBlockProperty {
     unsigned int        dev1;   // Maj
     unsigned int        dev2;   // Min
 } HCBlockProperty;
+
+/* Reader thread callback status code */
+enum { CB_OK = 0, CB_FINISH, CB_FORCE_QUITED };
+
+/* Progress Callback */
+typedef void (*HCReaderThreadCallback) (int, const char *, unsigned long, unsigned long);
 
 /* Function Export */
 extern int HCImportPathToCell(int cellfd, const char *path, unsigned long offset, 

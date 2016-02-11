@@ -53,5 +53,8 @@
         do { p = calloc(l, s); if(!p) { action; } } while(0)
 
 extern int HCWriteFileX(int fd, void *buffer, size_t size);
+extern int HCReadFileX(int fd, void *buffer, size_t size);
+extern int isFileExists(const char *filename);
+extern int mkpath(const char *s, mode_t mode);
 
 #endif

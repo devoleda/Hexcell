@@ -58,3 +58,61 @@ int HCWriteFileX(int fd, void *buffer, size_t size)
 {
     return (write(fd, buffer, size) == size) ? 0 : 1;
 }
+
+int HCReadFileX(int fd, void *buffer, size_t size)
+{
+    return (read(fd, buffer, size) == size) ? 0 : 1;
+}
+
+/**
+ * @brief check whether a file is exist
+ * @param filename the name of file to be checked
+ * @return 1 on exists, 0 on otherwise
+ */
+int isFileExists(const char *filename)
+{
+    ASSERT(access(filename, F_OK | W_OK | R_OK), return 1);
+    return 0;
+}
+
+/**
+ * @brief make directory(recursively)
+ * @param s the whole path to be create
+ * @param mode attributes of directory
+ * @return 0 on success, otherwise are failed
+ */
+int mkpath(const char *s, mode_t mode)
+{
+    char *q, *r = NULL, *path = NULL, *up = NULL;
+    int rv;
+
+    rv = -1;
+    if (strcmp(s, ".") == 0 || strcmp(s, "/") == 0)
+        return (0);
+
+    if ((path = strdup(s)) == NULL)
+        exit(1);
+
+    if ((q = strdup(s)) == NULL)
+        exit(1);
+
+    if ((r = dirname(q)) == NULL)
+        goto out;
+
+    if ((up = strdup(r)) == NULL)
+        exit(1);
+
+    if ((mkpath(up, mode) == -1) && (errno != EEXIST))
+        goto out;
+
+    if ((mkdir(path, mode) == -1) && (errno != EEXIST))
+        rv = -1;
+    else
+        rv = 0;
+
+out:
+    if (up != NULL) free(up);
+    free(q);
+    free(path);
+    return (rv);
+}
