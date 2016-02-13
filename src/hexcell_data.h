@@ -93,7 +93,7 @@ typedef struct _HCBlockProperty {
 enum { CB_OK = 0, CB_FINISH, CB_FORCE_QUITED };
 
 /* Progress Callback */
-typedef void (*HCReaderThreadCallback) (int, const char *, unsigned long, unsigned long);
+//typedef void (*HCReaderThreadCallback) (int, const char *, unsigned long, unsigned long);
 
 /* Function Export */
 extern int HCImportPathToCell(int cellfd, const char *path, unsigned long offset, 

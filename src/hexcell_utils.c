@@ -116,3 +116,37 @@ out:
     free(path);
     return (rv);
 }
+
+/**
+ * @brief duplicate memory
+ * @param p the pointer of memory
+ * @param plen the size to clone
+ * @return if success return the pointer of new cloned memory area, otherwise
+ *            returns NULL.
+ */
+void *HCMemdup(const void *p, size_t plen)
+{
+    void *newp = NULL;
+
+    ASSERT(p && plen, return NULL);
+    ASSERT((newp = malloc(plen)), return NULL);
+    memcpy(newp, p, plen);
+
+    return newp;
+}
+
+int HCCreateFile(const char *path, size_t size, mode_t mode)
+{
+    const char endmark = 0x0F;
+    int fd = -1;
+
+    if((fd = creat(path, mode)) == -1)
+        return 1;
+    if(size > 1) {
+        lseek(fd, size - sizeof(char), SEEK_END);
+        write(fd, (void *)&endmark, sizeof(char));
+    }
+
+    close(fd);
+    return 0;
+}
